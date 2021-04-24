@@ -11,8 +11,6 @@ data <- get()
 
 content <- content(data)
 
-<<<<<<< HEAD
-=======
 hits <- content$hits$hits
 
 df <- data.frame()
@@ -23,7 +21,6 @@ for (v in hits) {
     df <- rbind(df, data.frame(t(sapply(obj,c))))
 }
 
->>>>>>> c4b93ebb25bd4d649627aaaa5fe2476ffd64e523
 # Main login screen
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
                  wellPanel(
