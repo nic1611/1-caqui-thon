@@ -96,6 +96,7 @@ server <- function(input, output, session) {
         {
             x <- df_client_group$createdOn
             
+            
             hist(x, breaks = df_client_group$createdOn, xlab = "Data")
         }
     )
@@ -126,17 +127,25 @@ server <- function(input, output, session) {
                 
                 # First tab
                 tabItem(tabName ="dashboard", class = "active",
+                        textInput(
+                            "filtroEmpresa", "Filtro de Empresa", ""
+                        ),
+                        textOutput("empresaPesquisada"),
                         fluidRow(
                             box(width = 12, dataTableOutput('results'))
                         )),
                 # Second tab
                 tabItem(tabName = "second",
+                        textInput(
+                            "filtroEmpresa", "Filtro de Empresa", ""
+                        ),
+                        textOutput("empresaPesquisada"),
                         fluidRow(
                             box(width = 12, dataTableOutput('results2'))
                         )),
                 
                 # Third tab
-                tabItem(tabName = "grafico", plotOutput("lastAcessPlot"))
+                tabItem(tabName = "grafico", plotOutput("lastAcessPlot")                        )
                 )
             
         }
@@ -154,6 +163,9 @@ server <- function(input, output, session) {
         datatable(df, options = list(autoWidth = TRUE,
                                      searching = FALSE))
     })
+    
+    output$empresaPesquisada <- 
+        renderDT(reactive({filter(df_client_group, Species = input$filtroEmpresa)}))
     }
 
 runApp(list(ui = ui, server = server))
