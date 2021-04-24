@@ -110,6 +110,7 @@ server <- function(input, output, session) {
             sidebarMenu(
                 menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
                 menuItem("Second Page", tabName = "second", icon = icon("th")),
+                menuItem("Grafico", tabName="grafico"), icon = icon("dashboard")
             )
         }
     })
@@ -130,6 +131,9 @@ server <- function(input, output, session) {
                             box(width = 12, dataTableOutput('results2')),
                             box(width = 12, plotOutput("lastAcessPlot"))
                         )),
+                
+                # Third tab
+                tabItem(tabName = "grafico")
             )
         }
         else {
