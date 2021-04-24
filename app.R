@@ -1,4 +1,4 @@
-library(tidyr)
+library("tidyr")
 library(shiny)
 library(shinydashboard)
 library(DT)
@@ -19,6 +19,7 @@ df <- data.frame()
 for (v in hits) {
     obj <- v$`_source`
     df <- rbind(df, data.frame(t(sapply(obj,c))))
+    df$createdOn <- as.Date(df$createdOn)
 }
 
 # Main login screen

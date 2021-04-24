@@ -7,4 +7,5 @@ jsDataTable <- as.data.frame(jsContent)
 
 jsHits <- jsDataTable$hits.hits._id.1
 
-print(jsHits)
+int <- c(0:9)
+
