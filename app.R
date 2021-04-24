@@ -87,13 +87,13 @@ server <- function(input, output, session) {
             }
         }
         
-    output$lastAcessPlot <- renderPlot(
-        {
-            x <- df_client_group$createdOn
-            
-            hist(x, breaks = df_client_group$createdOn, xlab = "Data")
-        }
-    )
+        output$lastAcessPlot <- renderPlot(
+            {
+                x <- newDf()$createdOn
+                
+                hist(x, breaks = df_client_group$createdOn, xlab = "Data")
+            }
+        )
     })
     
     output$logoutbtn <- renderUI({
@@ -110,7 +110,6 @@ server <- function(input, output, session) {
             sidebarMenu(
                 menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
                 menuItem("Second Page", tabName = "second", icon = icon("th")),
-                menuItem("Grafico", tabName="grafico"), icon = icon("dashboard")
             )
         }
     })
@@ -127,31 +126,29 @@ server <- function(input, output, session) {
                 # Second tab
                 tabItem(tabName = "second",
                         fluidRow(
-                        textInput("text", label = h3("Nome empresa"), value = ""),
-                            box(width = 12, dataTableOutput('results2'))
+                            textInput("text", label = h3("Nome empresa"), value = ""),
+                            box(width = 12, dataTableOutput('results2')),
+                            box(width = 12, plotOutput("lastAcessPlot"))
                         )),
-                
-                # Third tab
-                tabItem(tabName = "grafico", plotOutput("lastAcessPlot"))
-                )
-            
+            )
         }
         else {
             loginpage
         }
     })
     
-    newDf = reactive({ filter(df, companyName == input$text)})
+    newDf <- reactive({df %>% 
+            filter(df$companyName == input$text)})
     
     output$results <-  DT::renderDataTable({
         datatable(df_client_group, options = list(autoWidth = TRUE,
-                                       searching = FALSE))
+                                                  searching = FALSE))
     })
     
     output$results2 <-  DT::renderDataTable({
-        datatable(newDf, options = list(autoWidth = TRUE,
-                                     searching = FALSE))
+        datatable(newDf(), options = list(autoWidth = TRUE,
+                                        searching = FALSE))
     })
-    }
+}
 
 runApp(list(ui = ui, server = server))
