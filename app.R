@@ -106,7 +106,8 @@ server <- function(input, output, session) {
         if (USER$login == TRUE ){ 
             sidebarMenu(
                 menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
-                menuItem("Second Page", tabName = "second", icon = icon("th"))
+                menuItem("Second Page", tabName = "second", icon = icon("th")),
+                menuItem("Grafico", tabName="grafico"), icon = icon("g")
             )
         }
     })
@@ -129,8 +130,12 @@ server <- function(input, output, session) {
                         fluidRow(
                             box(width = 12, dataTableOutput('results2'))
                         )),
-                tabItem(tabName = "grafico"),
-                        
+                
+                # Third tab
+                tabItem(tabName = "grafico",
+                        plotOutput(
+                            'results'
+                        ))
                 )
             
         }
