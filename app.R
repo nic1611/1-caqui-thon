@@ -1,9 +1,10 @@
-library("tidyr")
+library(tidyr)
 library(shiny)
 library(shinydashboard)
 library(DT)
 library(shinyjs)
 library(sodium)
+library(tidyverse)
 source('./src/getData.R')
 
 data <- get()
@@ -18,7 +19,6 @@ df <- data.frame()
 for (v in hits) {
     obj <- v$`_source`
     df <- rbind(df, data.frame(t(sapply(obj,c))))
-    df$createdOn <- as.Date(df$createdOn)
 }
 
 df$createdOn <- as.Date(df$createdOn)
@@ -90,7 +90,15 @@ server <- function(input, output, session) {
                     }
                 } 
             }
-        }    
+        }
+        
+    output$lastAcessPlot <- renderPlot(
+        {
+            x <- df_client_group$createdOn
+            
+            hist(x, breaks = df_client_group$createdOn, xlab = "Data")
+        }
+    )
     })
     
     output$logoutbtn <- renderUI({
@@ -107,7 +115,7 @@ server <- function(input, output, session) {
             sidebarMenu(
                 menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
                 menuItem("Second Page", tabName = "second", icon = icon("th")),
-                menuItem("Grafico", tabName="grafico"), icon = icon("g")
+                menuItem("Grafico", tabName="grafico"), icon = icon("dashboard")
             )
         }
     })
@@ -120,11 +128,7 @@ server <- function(input, output, session) {
                 tabItem(tabName ="dashboard", class = "active",
                         fluidRow(
                             box(width = 12, dataTableOutput('results'))
-                        ),
-                        fluidRow(
-                            box(width = 12, dataTableOutput('results2'))
                         )),
-                
                 # Second tab
                 tabItem(tabName = "second",
                         fluidRow(
@@ -132,10 +136,7 @@ server <- function(input, output, session) {
                         )),
                 
                 # Third tab
-                tabItem(tabName = "grafico",
-                        plotOutput(
-                            'results'
-                        ))
+                tabItem(tabName = "grafico", plotOutput("lastAcessPlot"))
                 )
             
         }
@@ -153,6 +154,6 @@ server <- function(input, output, session) {
         datatable(df, options = list(autoWidth = TRUE,
                                      searching = FALSE))
     })
-}
+    }
 
 runApp(list(ui = ui, server = server))
