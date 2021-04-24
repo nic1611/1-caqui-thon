@@ -20,6 +20,10 @@ for (v in hits) {
     df <- rbind(df, data.frame(t(sapply(obj,c))))
 }
 
+df$createdOn <- as.Date(df$createdOn)
+
+df_client_group <- group_by(df, companyName, createdOn) %>% summarise(acessos = length(companyName))
+
 # Main login screen
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
                  wellPanel(
@@ -114,6 +118,9 @@ server <- function(input, output, session) {
                 tabItem(tabName ="dashboard", class = "active",
                         fluidRow(
                             box(width = 12, dataTableOutput('results'))
+                        ),
+                        fluidRow(
+                            box(width = 12, dataTableOutput('results2'))
                         )),
                 
                 # Second tab
@@ -130,11 +137,14 @@ server <- function(input, output, session) {
     })
     
     output$results <-  DT::renderDataTable({
-        datatable(df, options = list(autoWidth = TRUE,
+        datatable(df_client_group, options = list(autoWidth = TRUE,
                                        searching = FALSE))
     })
     
-    
+    output$results2 <-  DT::renderDataTable({
+        datatable(df, options = list(autoWidth = TRUE,
+                                     searching = FALSE))
+    })
 }
 
 runApp(list(ui = ui, server = server))
