@@ -4,12 +4,11 @@ library(DT)
 library(shinyjs)
 library(sodium)
 source('./src/getData.R')
+source("./src/setData.R")
 
 data <- get()
 
 content <- content(data)
-
-
 
 # Main login screen
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
@@ -121,7 +120,7 @@ server <- function(input, output, session) {
     })
     
     output$results <-  DT::renderDataTable({
-        datatable(iris, options = list(autoWidth = TRUE,
+        datatable(content, options = list(autoWidth = TRUE,
                                        searching = FALSE))
     })
     
