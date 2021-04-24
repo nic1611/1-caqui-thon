@@ -5,7 +5,6 @@ library(DT)
 library(shinyjs)
 library(sodium)
 source('./src/getData.R')
-source("./src/setData.R")
 
 data <- get()
 
@@ -122,8 +121,10 @@ server <- function(input, output, session) {
                 tabItem(tabName = "second",
                         fluidRow(
                             box(width = 12, dataTableOutput('results2'))
-                        )
-                ))
+                        )),
+                tabItem(tabName = "grafico"),
+                        
+                )
             
         }
         else {
