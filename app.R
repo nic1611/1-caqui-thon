@@ -87,14 +87,13 @@ server <- function(input, output, session) {
             }
         }
         
-    output$lastAcessPlot <- renderPlot(
-        {
-            x <- df_client_group$createdOn
-            
-            
-            hist(x, breaks = df_client_group$createdOn, xlab = "Data")
-        }
-    )
+        output$lastAcessPlot <- renderPlot(
+            {
+                x <- df_client_group$createdOn
+                
+                hist(x, breaks = df_client_group$createdOn, xlab = "Data")
+            }
+        )
     })
     
     output$logoutbtn <- renderUI({
@@ -122,27 +121,19 @@ server <- function(input, output, session) {
                 
                 # First tab
                 tabItem(tabName ="dashboard", class = "active",
-                        textInput(
-                            "filtroEmpresa", "Filtro de Empresa", ""
-                        ),
-                        textOutput("empresaPesquisada"),
                         fluidRow(
                             box(width = 12, dataTableOutput('results'))
                         )),
                 # Second tab
                 tabItem(tabName = "second",
-                        textInput(
-                            "filtroEmpresa", "Filtro de Empresa", ""
-                        ),
-                        textOutput("empresaPesquisada"),
                         fluidRow(
-                        textInput("text", label = h3("Nome empresa"), value = ""),
+                            textInput("text", label = h3("Nome empresa"), value = ""),
                             box(width = 12, dataTableOutput('results2'))
                         )),
                 
                 # Third tab
-                tabItem(tabName = "grafico", plotOutput("lastAcessPlot")                        )
-                )
+                tabItem(tabName = "grafico", plotOutput("lastAcessPlot"))
+            )
             
         }
         else {
@@ -150,20 +141,17 @@ server <- function(input, output, session) {
         }
     })
     
-    newDf = reactive({ filter(df, companyName == input$text)})
+    newDf <- reactive({df_client_group %>% filter(df_client_group$companyName == input$text %>% arrange(desc(df_client_group$companyName)))})
     
     output$results <-  DT::renderDataTable({
         datatable(df_client_group, options = list(autoWidth = TRUE,
-                                       searching = FALSE))
+                                                  searching = FALSE))
     })
     
     output$results2 <-  DT::renderDataTable({
         datatable(newDf, options = list(autoWidth = TRUE,
-                                     searching = FALSE))
+                                        searching = FALSE))
     })
-    
-    output$empresaPesquisada <- 
-        renderDT(reactive({filter(df_client_group, Species = input$filtroEmpresa)}))
-    }
+}
 
 runApp(list(ui = ui, server = server))
