@@ -23,7 +23,7 @@ for (v in hits) {
 
 df$createdOn <- as.Date(df$createdOn)
 
-df_client_group <- group_by(df, companyName, createdOn) %>% summarise(acessos = length(companyName))
+df_client_group <- group_by(df, companyName, createdOn) %>% summarise(contratoes = length(companyName))
 
 # Main login screen
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
@@ -53,7 +53,7 @@ credentials = data.frame(
     stringsAsFactors = F
 )
 
-header <- dashboardHeader( title = "Simple Dashboard", uiOutput("logoutbtn"))
+header <- dashboardHeader( title = "CaquiThon", uiOutput("logoutbtn"))
 
 sidebar <- dashboardSidebar(uiOutput("sidebarpanel")) 
 body <- dashboardBody(shinyjs::useShinyjs(), uiOutput("body"))
@@ -108,9 +108,8 @@ server <- function(input, output, session) {
     output$sidebarpanel <- renderUI({
         if (USER$login == TRUE ){ 
             sidebarMenu(
-                menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
-                menuItem("Second Page", tabName = "second", icon = icon("th")),
-                menuItem("Grafico", tabName="grafico"), icon = icon("dashboard")
+                menuItem("Contratacoes", tabName = "dashboard", icon = icon("dashboard")),
+                menuItem("Menu", tabName = "second", icon = icon("th"))
             )
         }
     })
@@ -127,13 +126,12 @@ server <- function(input, output, session) {
                 # Second tab
                 tabItem(tabName = "second",
                         fluidRow(
-                            textInput("text", label = h3("Nome empresa"), value = ""),
+                            box(width = 12,textInput("text", label = h3("Nome empresa"), value = "")),
                             box(width = 12, dataTableOutput('results2')),
                             box(width = 12, plotOutput("lastAcessPlot"))
-                        )),
+                        ))
                 
-                # Third tab
-                tabItem(tabName = "grafico")
+                
             )
         }
         else {
