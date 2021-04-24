@@ -1,7 +1,7 @@
 library(httr)
 
 bodyJ = '{
-	"size": 10,
+	"size": 50,
 	"_source": {
 		"includes": [
 			"email",
