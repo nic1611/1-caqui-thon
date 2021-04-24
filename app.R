@@ -4,6 +4,7 @@ library(shinydashboard)
 library(DT)
 library(shinyjs)
 library(sodium)
+library(tidyverse)
 source('./src/getData.R')
 
 data <- get()
@@ -89,7 +90,15 @@ server <- function(input, output, session) {
                     }
                 } 
             }
-        }    
+        }
+        
+    output$lastAcessPlot <- renderPlot(
+        {
+            x <- df_client_group$createdOn
+            
+            hist(x, breaks = df_client_group$createdOn, xlab = "Data")
+        }
+    )
     })
     
     output$logoutbtn <- renderUI({
@@ -105,7 +114,8 @@ server <- function(input, output, session) {
         if (USER$login == TRUE ){ 
             sidebarMenu(
                 menuItem("Main Page", tabName = "dashboard", icon = icon("dashboard")),
-                menuItem("Second Page", tabName = "second", icon = icon("th"))
+                menuItem("Second Page", tabName = "second", icon = icon("th")),
+                menuItem("Grafico", tabName="grafico"), icon = icon("dashboard")
             )
         }
     })
@@ -118,17 +128,16 @@ server <- function(input, output, session) {
                 tabItem(tabName ="dashboard", class = "active",
                         fluidRow(
                             box(width = 12, dataTableOutput('results'))
-                        ),
-                        fluidRow(
-                            box(width = 12, dataTableOutput('results2'))
                         )),
-                
                 # Second tab
                 tabItem(tabName = "second",
                         fluidRow(
                             box(width = 12, dataTableOutput('results2'))
-                        )
-                ))
+                        )),
+                
+                # Third tab
+                tabItem(tabName = "grafico", plotOutput("lastAcessPlot"))
+                )
             
         }
         else {
@@ -145,6 +154,6 @@ server <- function(input, output, session) {
         datatable(df, options = list(autoWidth = TRUE,
                                      searching = FALSE))
     })
-}
+    }
 
 runApp(list(ui = ui, server = server))
