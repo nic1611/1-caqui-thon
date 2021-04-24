@@ -42,19 +42,14 @@ loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margi
                                  tags$p("Oops! Incorrect username or password!",
                                         style = "color: red; font-weight: 600; 
                                             padding-top: 5px;font-size:16px;", 
-                                        class = "text-center"))),
-                         br(),
-                         br(),
-                         tags$code("Username: myuser  Password: mypass"),
-                         br(),
-                         tags$code("Username: myuser1  Password: mypass1")
+                                        class = "text-center")))
                      ))
 )
 
 credentials = data.frame(
-    username_id = c("myuser", "myuser1"),
-    passod   = sapply(c("mypass", "mypass1"),password_store),
-    permission  = c("basic", "advanced"), 
+    username_id = c("bne"),
+    passod   = sapply(c("teste"),password_store),
+    permission  = c("advanced"), 
     stringsAsFactors = F
 )
 
@@ -141,6 +136,7 @@ server <- function(input, output, session) {
                         ),
                         textOutput("empresaPesquisada"),
                         fluidRow(
+                        textInput("text", label = h3("Nome empresa"), value = ""),
                             box(width = 12, dataTableOutput('results2'))
                         )),
                 
@@ -154,13 +150,15 @@ server <- function(input, output, session) {
         }
     })
     
+    newDf = reactive({ filter(df, companyName == input$text)})
+    
     output$results <-  DT::renderDataTable({
         datatable(df_client_group, options = list(autoWidth = TRUE,
                                        searching = FALSE))
     })
     
     output$results2 <-  DT::renderDataTable({
-        datatable(df, options = list(autoWidth = TRUE,
+        datatable(newDf, options = list(autoWidth = TRUE,
                                      searching = FALSE))
     })
     
