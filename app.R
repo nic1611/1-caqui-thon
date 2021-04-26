@@ -153,4 +153,4 @@ server <- function(input, output, session) {
     })
 }
 
-runApp(list(ui = ui, server = server))
+shinyApp(ui = ui, server = server)
